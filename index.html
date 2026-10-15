@@ -45,11 +45,11 @@
 
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 20px; max-width: 650px; margin: 0 auto; background: var(--bg-color); color: var(--text-main); transition: background 0.3s, color 0.3s; }
   
-  /* Header & Theme Toggle */
-  .header-container { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
-  h1 { font-size: 20px; color: #eb0a1e; margin: 0; font-weight: 700; flex: 1; text-align: center; line-height: 1.5; }
-  .nav-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-weight: 600; white-space: nowrap; }
-  .theme-toggle { font-size: 16px; }
+  /* Header & Centered Title */
+  .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; position: relative; height: 40px; }
+  h1 { font-size: 18px; color: #eb0a1e; margin: 0; font-weight: 700; position: absolute; left: 50%; transform: translateX(-50%); text-align: center; width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .nav-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 13px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-weight: 600; white-space: nowrap; z-index: 2; }
+  .theme-toggle { font-size: 15px; }
   .subtitle { text-align: center; font-size: 13px; color: var(--text-muted); margin-bottom: 20px; font-weight: 500; }
   
   .control-group { background: var(--card-bg); padding: 18px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
@@ -82,22 +82,23 @@
   .action-lubricate { color: #3b82f6; font-weight: 700; }
   .empty-state { text-align: center; padding: 35px 20px; color: var(--text-muted); font-size: 14px; background: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
   
-  /* Database UI Styles */
+  /* Database UI & Safari Fixes */
   .task-inputs { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-color); }
   .input-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
   .input-row label { font-size: 14px; margin-bottom: 0; display: flex; align-items: center; cursor: pointer; color: var(--text-main); }
   .input-row label input { margin-right: 8px; width: 18px; height: 18px; accent-color: #10b981; }
-  .date-input { padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; color: var(--input-text); background: var(--input-bg); width: 100%; box-sizing: border-box; }
+  
+  .date-input { -webkit-appearance: none; appearance: none; padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; color: var(--input-text); background: var(--input-bg); width: 100%; box-sizing: border-box; height: 36px; line-height: 20px; }
   .note-input { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; font-family: inherit; resize: vertical; min-height: 50px; box-sizing: border-box; background: var(--input-bg); color: var(--input-text); }
   
   /* Bulk Entry UI */
-  .bulk-row { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
+  .bulk-row { display: flex; align-items: flex-start; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
   .bulk-row:last-child { border-bottom: none; }
-  .bulk-km { font-weight: 700; width: 65px; font-size: 13px; color: var(--text-main); }
-  .bulk-cb-wrapper { display: flex; align-items: center; justify-content: center; }
+  .bulk-km { font-weight: 700; width: 65px; font-size: 13px; color: var(--text-main); margin-top: 10px; }
+  .bulk-cb-wrapper { display: flex; align-items: center; justify-content: center; margin-top: 10px; }
   .bulk-checkbox { width: 22px; height: 22px; accent-color: #10b981; margin: 0; }
-  .bulk-inputs { display: flex; flex: 1; gap: 8px; }
-  .bulk-input { padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; background: var(--input-bg); color: var(--input-text); width: 100%; box-sizing: border-box; }
+  .bulk-inputs { display: flex; gap: 8px; }
+  .bulk-input { -webkit-appearance: none; appearance: none; padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; background: var(--input-bg); color: var(--input-text); width: 100%; box-sizing: border-box; height: 36px; line-height: 20px; }
   
   /* Backup Buttons */
   .btn-group { display: flex; gap: 10px; margin-top: 12px; }
@@ -212,6 +213,7 @@
       let text = i.toLocaleString() + ' km';
       
       if (meta.actualKm) { text += ` (Actual: ${meta.actualKm} km)`; }
+      if (meta.notes && meta.notes.trim() !== '') { text += ' 📝'; }
       if (meta.completed) { text = '✅ ' + text; }
       
       option.text = text;
@@ -321,7 +323,7 @@
       return;
     }
 
-    const meta = (db[km] && db[km]._meta) ? db[km]._meta : { completed: false, date: '', actualKm: '' };
+    const meta = (db[km] && db[km]._meta) ? db[km]._meta : { completed: false, date: '', actualKm: '', notes: '' };
     const metaCard = document.createElement('div');
     metaCard.className = 'card card-meta';
     metaCard.innerHTML = `
@@ -334,7 +336,7 @@
           Mark Entire Service Complete
         </label>
       </div>
-      <div style="display: flex; gap: 12px;">
+      <div style="display: flex; gap: 12px; margin-bottom: 12px;">
         <div style="flex: 1;">
           <label style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Service Date</label>
           <input type="date" class="date-input db-meta-input" data-km="${km}" data-field="date" value="${meta.date}">
@@ -343,6 +345,10 @@
           <label style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Actual Odometer</label>
           <input type="number" class="date-input db-meta-input" data-km="${km}" data-field="actualKm" placeholder="e.g. 10250" value="${meta.actualKm}">
         </div>
+      </div>
+      <div style="width: 100%;">
+        <label style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Interval Notes</label>
+        <textarea class="note-input db-meta-input" data-km="${km}" data-field="notes" placeholder="General notes for this interval...">${meta.notes || ''}</textarea>
       </div>
     `;
     resultsDiv.appendChild(metaCard);
@@ -386,7 +392,7 @@
     const km = e.target.getAttribute('data-km');
     const db = getDB();
     if (!db[km]) db[km] = {};
-    if (!db[km]._meta) db[km]._meta = { completed: false, date: '', actualKm: '' };
+    if (!db[km]._meta) db[km]._meta = { completed: false, date: '', actualKm: '', notes: '' };
 
     if (e.target.classList.contains('db-meta-input')) {
       const field = e.target.getAttribute('data-field');
@@ -441,7 +447,7 @@
     const db = getDB();
 
     for (let i = 5000; i <= 1000000; i += 5000) {
-      const meta = (db[i] && db[i]._meta) ? db[i]._meta : { completed: false, date: '', actualKm: '' };
+      const meta = (db[i] && db[i]._meta) ? db[i]._meta : { completed: false, date: '', actualKm: '', notes: '' };
       
       const row = document.createElement('div');
       row.className = 'bulk-row';
@@ -450,9 +456,12 @@
         <div class="bulk-cb-wrapper">
           <input type="checkbox" class="bulk-meta-input bulk-checkbox" data-km="${i}" data-field="completed" ${meta.completed ? 'checked' : ''}>
         </div>
-        <div class="bulk-inputs">
-          <input type="date" class="bulk-input bulk-meta-input" data-km="${i}" data-field="date" value="${meta.date}">
-          <input type="number" class="bulk-input bulk-meta-input" data-km="${i}" data-field="actualKm" placeholder="Odo km" value="${meta.actualKm}">
+        <div style="display: flex; flex-direction: column; flex: 1; gap: 8px;">
+          <div class="bulk-inputs">
+            <input type="date" class="bulk-input bulk-meta-input" data-km="${i}" data-field="date" value="${meta.date}">
+            <input type="number" class="bulk-input bulk-meta-input" data-km="${i}" data-field="actualKm" placeholder="Odo km" value="${meta.actualKm}">
+          </div>
+          <textarea class="note-input bulk-meta-input" data-km="${i}" data-field="notes" placeholder="Interval notes...">${meta.notes || ''}</textarea>
         </div>
       `;
       container.appendChild(row);
@@ -468,7 +477,7 @@
       
       const db = getDB();
       if (!db[km]) db[km] = {};
-      if (!db[km]._meta) db[km]._meta = { completed: false, date: '', actualKm: '' };
+      if (!db[km]._meta) db[km]._meta = { completed: false, date: '', actualKm: '', notes: '' };
       
       db[km]._meta[field] = value;
       
