@@ -26,6 +26,7 @@
   
   /* Dynamic Card Colors */
   .card { background: #fff; padding: 14px 16px; margin-bottom: 12px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
+  .card-meta { border-left: 5px solid #10b981; background: #f0fdf4; border-top: 1px solid #d1fae5; border-right: 1px solid #d1fae5; border-bottom: 1px solid #d1fae5; margin-bottom: 20px; }
   .card-standard { border-left: 5px solid #eb0a1e; }
   .card-additional { border-left: 5px solid #f97316; }
   .card-anthony { border-left: 5px solid #3b82f6; }
@@ -49,8 +50,8 @@
   .input-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
   .input-row label { font-size: 14px; margin-bottom: 0; display: flex; align-items: center; cursor: pointer; color: #111827; }
   .input-row label input { margin-right: 8px; width: 18px; height: 18px; accent-color: #10b981; }
-  .date-input { padding: 6px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; color: #374151; background: #f9fafb; }
-  .note-input { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: inherit; resize: vertical; min-height: 60px; box-sizing: border-box; background: #f9fafb; }
+  .date-input { padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; color: #374151; background: #fff; width: 100%; box-sizing: border-box; }
+  .note-input { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: inherit; resize: vertical; min-height: 50px; box-sizing: border-box; background: #f9fafb; }
   
   /* Backup Buttons */
   .btn-group { display: flex; gap: 10px; margin-top: 12px; }
@@ -67,7 +68,7 @@
 <div class="control-group">
   <label for="km-select">Select Odometer Reading (km)</label>
   <select id="km-select">
-    <option value="">-- Tap to Select Interval --</option>
+    <!-- Populated by JS -->
   </select>
   
   <div class="checkbox-group">
@@ -109,14 +110,39 @@
   function getDB() { return JSON.parse(localStorage.getItem(DB_KEY)) || {}; }
   function saveDB(data) { localStorage.setItem(DB_KEY, JSON.stringify(data)); }
 
-  // Populate Dropdown
-  const select = document.getElementById('km-select');
-  for (let i = 5000; i <= 1000000; i += 5000) {
-    let option = document.createElement('option');
-    option.value = i;
-    option.text = i.toLocaleString() + ' km';
-    select.appendChild(option);
+  // Populate Dropdown with dynamic completion/actual km states
+  function updateDropdown() {
+    const select = document.getElementById('km-select');
+    const db = getDB();
+    const currentValue = select.value;
+    
+    select.innerHTML = '<option value="">-- Tap to Select Interval --</option>';
+    
+    for (let i = 5000; i <= 1000000; i += 5000) {
+      let option = document.createElement('option');
+      option.value = i;
+      
+      const meta = db[i] && db[i]._meta ? db[i]._meta : {};
+      let text = i.toLocaleString() + ' km';
+      
+      if (meta.actualKm) {
+        text += ` (Actual: ${meta.actualKm} km)`;
+      }
+      if (meta.completed) {
+        text = '✅ ' + text;
+      }
+      
+      option.text = text;
+      select.appendChild(option);
+    }
+    
+    if (currentValue) {
+      select.value = currentValue;
+    }
   }
+
+  // Initialize dropdown on load
+  updateDropdown();
 
   // Maintenance Rules Set
   const rules = [
@@ -186,15 +212,10 @@
       let currentAction = rule.action;
 
       if (rule.isAnthony) {
-        if (!includeAnthony) return; // Skip if Anthony is unchecked
-        
-        if (rule.custom) {
-          isActionable = rule.custom(km, includeAdditional);
-        } else if (includeAdditional && rule.additional && km % rule.additional === 0) {
-          isActionable = true;
-        } else if (rule.standard && km % rule.standard === 0) {
-          isActionable = true;
-        }
+        if (!includeAnthony) return;
+        if (rule.custom) { isActionable = rule.custom(km, includeAdditional); } 
+        else if (includeAdditional && rule.additional && km % rule.additional === 0) { isActionable = true; } 
+        else if (rule.standard && km % rule.standard === 0) { isActionable = true; }
         if (isActionable) matchType = 'anthony';
       } else {
         if (rule.custom) {
@@ -206,19 +227,12 @@
           const hitsStandard = rule.standard && km % rule.standard === 0;
           const hitsAdditional = includeAdditional && rule.additional && km % rule.additional === 0;
           
-          if (hitsStandard) {
-            isActionable = true;
-            matchType = 'standard';
-          } else if (hitsAdditional) {
-            isActionable = true;
-            matchType = 'additional';
-          }
+          if (hitsStandard) { isActionable = true; matchType = 'standard'; } 
+          else if (hitsAdditional) { isActionable = true; matchType = 'additional'; }
         }
       }
 
-      if (isActionable) { 
-        tasks.push({ ...rule, action: currentAction, matchType: matchType }); 
-      }
+      if (isActionable) { tasks.push({ ...rule, action: currentAction, matchType: matchType }); }
     });
 
     resultsDiv.innerHTML = '';
@@ -228,8 +242,36 @@
       return;
     }
 
+    // 1. Render the Master Interval Details Card
+    const meta = (db[km] && db[km]._meta) ? db[km]._meta : { completed: false, date: '', actualKm: '' };
+    const metaCard = document.createElement('div');
+    metaCard.className = 'card card-meta';
+    metaCard.innerHTML = `
+      <div class="card-title-wrapper" style="margin-bottom: 12px;">
+        <h3 style="color: #065f46; font-size: 16px;">Interval Completion Details</h3>
+      </div>
+      <div class="input-row" style="margin-bottom: 16px;">
+        <label style="font-size: 15px; color: #065f46; font-weight: 700;">
+          <input type="checkbox" class="db-meta-input" data-km="${km}" data-field="completed" ${meta.completed ? 'checked' : ''} style="width: 22px; height: 22px;"> 
+          Mark Entire Service Complete
+        </label>
+      </div>
+      <div style="display: flex; gap: 12px;">
+        <div style="flex: 1;">
+          <label style="font-size: 12px; color: #4b5563; margin-bottom: 4px;">Service Date</label>
+          <input type="date" class="date-input db-meta-input" data-km="${km}" data-field="date" value="${meta.date}">
+        </div>
+        <div style="flex: 1;">
+          <label style="font-size: 12px; color: #4b5563; margin-bottom: 4px;">Actual Odometer</label>
+          <input type="number" class="date-input db-meta-input" data-km="${km}" data-field="actualKm" placeholder="e.g. 10250" value="${meta.actualKm}">
+        </div>
+      </div>
+    `;
+    resultsDiv.appendChild(metaCard);
+
+    // 2. Render the Individual Task Cards
     tasks.forEach(task => {
-      const taskData = (db[km] && db[km][task.item]) ? db[km][task.item] : { checked: false, date: '', notes: '' };
+      const taskData = (db[km] && db[km][task.item]) ? db[km][task.item] : { checked: false, notes: '' };
       
       let badgeHtml = '';
       if (task.matchType === 'additional') badgeHtml = '<span class="badge badge-additional">Severe / Off-Road</span>';
@@ -247,12 +289,11 @@
         ${task.part !== "N/A" ? `<p><strong>OEM / Ref Part:</strong> <span class="part-no">${task.part}</span></p>` : ''}
         
         <div class="task-inputs">
-          <div class="input-row">
+          <div class="input-row" style="margin-bottom: 8px;">
             <label>
               <input type="checkbox" class="db-input" data-km="${km}" data-item="${task.item.replace(/"/g, '&quot;')}" data-field="checked" ${taskData.checked ? 'checked' : ''}> 
-              Completed
+              Task Completed
             </label>
-            <input type="date" class="date-input db-input" data-km="${km}" data-item="${task.item.replace(/"/g, '&quot;')}" data-field="date" value="${taskData.date}">
           </div>
           <textarea class="note-input db-input" placeholder="Add service notes or part brands used..." data-km="${km}" data-item="${task.item.replace(/"/g, '&quot;')}" data-field="notes">${taskData.notes}</textarea>
         </div>
@@ -263,29 +304,41 @@
 
   // Event Delegation to save data instantly
   document.getElementById('results').addEventListener('input', (e) => {
-    if (e.target.classList.contains('db-input')) {
-      const km = e.target.getAttribute('data-km');
+    const km = e.target.getAttribute('data-km');
+    const db = getDB();
+    
+    if (!db[km]) db[km] = {};
+    if (!db[km]._meta) db[km]._meta = { completed: false, date: '', actualKm: '' };
+
+    // Handle Master Interval Inputs
+    if (e.target.classList.contains('db-meta-input')) {
+      const field = e.target.getAttribute('data-field');
+      const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+      
+      db[km]._meta[field] = value;
+
+      // Auto-set today's date when Master "Completed" is checked
+      if (e.target.type === 'checkbox' && e.target.checked) {
+        const dateInput = e.target.closest('.card-meta').querySelector('input[data-field="date"]');
+        if (dateInput && !dateInput.value) {
+          const today = new Date().toISOString().split('T')[0];
+          dateInput.value = today;
+          db[km]._meta.date = today;
+        }
+      }
+      
+      saveDB(db);
+      updateDropdown(); // Refresh dropdown instantly so the ✅ or Actual KM shows up
+    } 
+    // Handle Individual Task Inputs
+    else if (e.target.classList.contains('db-input')) {
       const item = e.target.getAttribute('data-item');
       const field = e.target.getAttribute('data-field');
       const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
       
-      const db = getDB();
-      if (!db[km]) db[km] = {};
-      if (!db[km][item]) db[km][item] = { checked: false, date: '', notes: '' };
-      
+      if (!db[km][item]) db[km][item] = { checked: false, notes: '' };
       db[km][item][field] = value;
-
-      // Auto-set today's date when "Completed" is checked
-      if (e.target.type === 'checkbox' && e.target.checked) {
-        const dateInput = e.target.closest('.input-row').querySelector('.date-input');
-        // Only auto-fill if the date is currently empty (prevents overwriting old dates)
-        if (dateInput && !dateInput.value) {
-          const today = new Date().toISOString().split('T')[0];
-          dateInput.value = today;
-          db[km][item].date = today;
-        }
-      }
-
+      
       saveDB(db);
     }
   });
@@ -312,6 +365,7 @@
         const json = JSON.parse(e.target.result);
         saveDB(json);
         alert("Service history backup restored successfully!");
+        updateDropdown();
         renderTasks(); 
       } catch (err) {
         alert("Invalid backup file.");
