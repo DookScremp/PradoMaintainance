@@ -12,46 +12,82 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
 <style>
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 20px; max-width: 650px; margin: 0 auto; background: #f7f9fc; color: #1a1a1a; }
-  h1 { font-size: 20px; text-align: center; color: #eb0a1e; margin-bottom: 6px; font-weight: 700; }
-  .subtitle { text-align: center; font-size: 13px; color: #6b7280; margin-bottom: 20px; font-weight: 500; }
-  .control-group { background: #ffffff; padding: 18px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
-  label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; }
-  select { width: 100%; padding: 12px; font-size: 15px; border: 1px solid #d1d5db; border-radius: 8px; margin-bottom: 16px; background: #fff; appearance: none; }
+  /* CSS Variables for Light/Dark Mode */
+  :root {
+    --bg-color: #f7f9fc;
+    --text-main: #1a1a1a;
+    --text-muted: #6b7280;
+    --card-bg: #ffffff;
+    --border-color: #d1d5db;
+    --input-bg: #fff;
+    --input-text: #1a1a1a;
+    --part-bg: #f3f4f6;
+    --part-text: #1f2937;
+    --meta-bg: #f0fdf4;
+    --meta-border: #d1fae5;
+    --meta-text: #065f46;
+  }
+
+  body.dark-mode {
+    --bg-color: #111827;
+    --text-main: #f9fafb;
+    --text-muted: #9ca3af;
+    --card-bg: #1f2937;
+    --border-color: #374151;
+    --input-bg: #374151;
+    --input-text: #f9fafb;
+    --part-bg: #4b5563;
+    --part-text: #f9fafb;
+    --meta-bg: #064e3b;
+    --meta-border: #065f46;
+    --meta-text: #34d399;
+  }
+
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 20px; max-width: 650px; margin: 0 auto; background: var(--bg-color); color: var(--text-main); transition: background 0.3s, color 0.3s; }
+  
+  /* Header & Theme Toggle */
+  .header-container { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+  h1 { font-size: 20px; color: #eb0a1e; margin: 0; font-weight: 700; flex: 1; text-align: center; }
+  .theme-toggle { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+  .subtitle { text-align: center; font-size: 13px; color: var(--text-muted); margin-bottom: 20px; font-weight: 500; }
+  
+  .control-group { background: var(--card-bg); padding: 18px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
+  label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; color: var(--text-main); }
+  select { width: 100%; padding: 12px; font-size: 15px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 16px; background: var(--input-bg); color: var(--input-text); appearance: none; }
   
   .checkbox-group { display: flex; flex-direction: column; gap: 12px; }
-  .checkbox-label { display: flex; align-items: center; font-weight: 500; font-size: 14px; cursor: pointer; color: #374151; }
+  .checkbox-label { display: flex; align-items: center; font-weight: 500; font-size: 14px; cursor: pointer; color: var(--text-main); }
   .checkbox-label input { width: 20px; height: 20px; margin-right: 10px; accent-color: #eb0a1e; }
   .checkbox-label input.anthony-cb { accent-color: #3b82f6; }
   
   /* Dynamic Card Colors */
-  .card { background: #fff; padding: 14px 16px; margin-bottom: 12px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
-  .card-meta { border-left: 5px solid #10b981; background: #f0fdf4; border-top: 1px solid #d1fae5; border-right: 1px solid #d1fae5; border-bottom: 1px solid #d1fae5; margin-bottom: 20px; }
+  .card { background: var(--card-bg); padding: 14px 16px; margin-bottom: 12px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
+  .card-meta { border-left: 5px solid #10b981; background: var(--meta-bg); border-top: 1px solid var(--meta-border); border-right: 1px solid var(--meta-border); border-bottom: 1px solid var(--meta-border); margin-bottom: 20px; }
   .card-standard { border-left: 5px solid #eb0a1e; }
   .card-additional { border-left: 5px solid #f97316; }
   .card-anthony { border-left: 5px solid #3b82f6; }
   
   /* Badges */
   .card-title-wrapper { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 6px; gap: 8px; }
-  .card-title-wrapper h3 { margin: 0; font-size: 15px; color: #111827; line-height: 1.3; }
+  .card-title-wrapper h3 { margin: 0; font-size: 15px; color: var(--text-main); line-height: 1.3; }
   .badge { font-size: 10px; font-weight: 700; padding: 3px 6px; border-radius: 4px; text-transform: uppercase; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
   .badge-additional { background: #ffedd5; color: #c2410c; }
   .badge-anthony { background: #dbeafe; color: #1d4ed8; }
 
-  .card p { margin: 3px 0; color: #4b5563; font-size: 13px; }
-  .part-no { display: inline-block; background: #f3f4f6; color: #1f2937; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 12px; font-weight: 600; margin-top: 4px; }
-  .action-replace { color: #dc2626; font-weight: 700; }
-  .action-inspect { color: #d97706; font-weight: 700; }
-  .action-lubricate { color: #2563eb; font-weight: 700; }
-  .empty-state { text-align: center; padding: 35px 20px; color: #6b7280; font-size: 14px; background: #fff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+  .card p { margin: 3px 0; color: var(--text-muted); font-size: 13px; }
+  .part-no { display: inline-block; background: var(--part-bg); color: var(--part-text); padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 12px; font-weight: 600; margin-top: 4px; }
+  .action-replace { color: #ef4444; font-weight: 700; }
+  .action-inspect { color: #f59e0b; font-weight: 700; }
+  .action-lubricate { color: #3b82f6; font-weight: 700; }
+  .empty-state { text-align: center; padding: 35px 20px; color: var(--text-muted); font-size: 14px; background: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
   
   /* Database UI Styles */
-  .task-inputs { margin-top: 14px; padding-top: 12px; border-top: 1px solid #e5e7eb; }
+  .task-inputs { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-color); }
   .input-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-  .input-row label { font-size: 14px; margin-bottom: 0; display: flex; align-items: center; cursor: pointer; color: #111827; }
+  .input-row label { font-size: 14px; margin-bottom: 0; display: flex; align-items: center; cursor: pointer; color: var(--text-main); }
   .input-row label input { margin-right: 8px; width: 18px; height: 18px; accent-color: #10b981; }
-  .date-input { padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; color: #374151; background: #fff; width: 100%; box-sizing: border-box; }
-  .note-input { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: inherit; resize: vertical; min-height: 50px; box-sizing: border-box; background: #f9fafb; }
+  .date-input { padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; color: var(--input-text); background: var(--input-bg); width: 100%; box-sizing: border-box; }
+  .note-input { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; font-family: inherit; resize: vertical; min-height: 50px; box-sizing: border-box; background: var(--input-bg); color: var(--input-text); }
   
   /* Backup Buttons */
   .btn-group { display: flex; gap: 10px; margin-top: 12px; }
@@ -62,8 +98,12 @@
 </head>
 <body>
 
-<h1>Prado 150 (1KD-FTV Auto) Schedule</h1>
-<div class="subtitle">3.0L Turbo Diesel | 5-Speed Automatic | 0–1,000,000 km</div>
+<div class="header-container">
+  <div style="width: 40px;"></div> <!-- Spacer for centering -->
+  <h1>Prado 150 Schedule</h1>
+  <button class="theme-toggle" id="theme-toggle" title="Toggle Dark Mode">🌓</button>
+</div>
+<div class="subtitle">3.0L Turbo Diesel | 5-Speed Auto | 0–1,000,000 km</div>
 
 <div class="control-group">
   <label for="km-select">Select Odometer Reading (km)</label>
@@ -89,7 +129,7 @@
 
 <div class="control-group" id="data-management" style="display: none;">
   <label>Service History Backup</label>
-  <p style="font-size: 12px; color: #6b7280; margin-top: 0;">Export your notes and dates before changing phones, or import a saved backup.</p>
+  <p style="font-size: 12px; color: var(--text-muted); margin-top: 0;">Export your notes and dates before changing phones, or import a saved backup.</p>
   <div class="btn-group">
     <button class="btn btn-export" onclick="exportData()">Export Backup</button>
     <button class="btn btn-import" onclick="document.getElementById('import-file').click()">Import Backup</button>
@@ -98,19 +138,42 @@
 </div>
 
 <script>
-  // PWA Service Worker Registration
+  // --- Dark Mode Logic ---
+  const themeToggleBtn = document.getElementById('theme-toggle');
+  
+  function applyTheme(isDark) {
+    if (isDark) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }
+
+  // Check LocalStorage first, then System Preference
+  const savedTheme = localStorage.getItem('prado_theme');
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  
+  if (savedTheme === 'dark' || (savedTheme === null && prefersDark)) {
+    applyTheme(true);
+  }
+
+  themeToggleBtn.addEventListener('click', () => {
+    const isCurrentlyDark = document.body.classList.contains('dark-mode');
+    applyTheme(!isCurrentlyDark);
+    localStorage.setItem('prado_theme', !isCurrentlyDark ? 'dark' : 'light');
+  });
+
+  // --- App Logic ---
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW failed:', err));
     });
   }
 
-  // Database Initialization
   const DB_KEY = 'prado_maintenance_db';
   function getDB() { return JSON.parse(localStorage.getItem(DB_KEY)) || {}; }
   function saveDB(data) { localStorage.setItem(DB_KEY, JSON.stringify(data)); }
 
-  // Populate Dropdown with dynamic completion/actual km states
   function updateDropdown() {
     const select = document.getElementById('km-select');
     const db = getDB();
@@ -141,10 +204,8 @@
     }
   }
 
-  // Initialize dropdown on load
   updateDropdown();
 
-  // Maintenance Rules Set
   const rules = [
     { item: "Engine Oil & Filter (Always change together)", standard: 10000, additional: 5000, action: "Replace", category: "Engine", part: "90915-20003 (Filter)" },
     { item: "Oil Pickup Screen Inspection", standard: 10000, additional: 5000, action: "Inspect (Check for carbon buildup via sump drain hole with camera)", category: "Engine", part: "N/A", isAnthony: true },
@@ -242,34 +303,32 @@
       return;
     }
 
-    // 1. Render the Master Interval Details Card
     const meta = (db[km] && db[km]._meta) ? db[km]._meta : { completed: false, date: '', actualKm: '' };
     const metaCard = document.createElement('div');
     metaCard.className = 'card card-meta';
     metaCard.innerHTML = `
       <div class="card-title-wrapper" style="margin-bottom: 12px;">
-        <h3 style="color: #065f46; font-size: 16px;">Interval Completion Details</h3>
+        <h3 style="color: var(--meta-text); font-size: 16px;">Interval Completion Details</h3>
       </div>
       <div class="input-row" style="margin-bottom: 16px;">
-        <label style="font-size: 15px; color: #065f46; font-weight: 700;">
+        <label style="font-size: 15px; color: var(--meta-text); font-weight: 700;">
           <input type="checkbox" class="db-meta-input" data-km="${km}" data-field="completed" ${meta.completed ? 'checked' : ''} style="width: 22px; height: 22px;"> 
           Mark Entire Service Complete
         </label>
       </div>
       <div style="display: flex; gap: 12px;">
         <div style="flex: 1;">
-          <label style="font-size: 12px; color: #4b5563; margin-bottom: 4px;">Service Date</label>
+          <label style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Service Date</label>
           <input type="date" class="date-input db-meta-input" data-km="${km}" data-field="date" value="${meta.date}">
         </div>
         <div style="flex: 1;">
-          <label style="font-size: 12px; color: #4b5563; margin-bottom: 4px;">Actual Odometer</label>
+          <label style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Actual Odometer</label>
           <input type="number" class="date-input db-meta-input" data-km="${km}" data-field="actualKm" placeholder="e.g. 10250" value="${meta.actualKm}">
         </div>
       </div>
     `;
     resultsDiv.appendChild(metaCard);
 
-    // 2. Render the Individual Task Cards
     tasks.forEach(task => {
       const taskData = (db[km] && db[km][task.item]) ? db[km][task.item] : { checked: false, notes: '' };
       
@@ -302,7 +361,6 @@
     });
   }
 
-  // Event Delegation to save data instantly
   document.getElementById('results').addEventListener('input', (e) => {
     const km = e.target.getAttribute('data-km');
     const db = getDB();
@@ -310,14 +368,12 @@
     if (!db[km]) db[km] = {};
     if (!db[km]._meta) db[km]._meta = { completed: false, date: '', actualKm: '' };
 
-    // Handle Master Interval Inputs
     if (e.target.classList.contains('db-meta-input')) {
       const field = e.target.getAttribute('data-field');
       const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
       
       db[km]._meta[field] = value;
 
-      // Auto-set today's date when Master "Completed" is checked
       if (e.target.type === 'checkbox' && e.target.checked) {
         const dateInput = e.target.closest('.card-meta').querySelector('input[data-field="date"]');
         if (dateInput && !dateInput.value) {
@@ -328,9 +384,8 @@
       }
       
       saveDB(db);
-      updateDropdown(); // Refresh dropdown instantly so the ✅ or Actual KM shows up
+      updateDropdown(); 
     } 
-    // Handle Individual Task Inputs
     else if (e.target.classList.contains('db-input')) {
       const item = e.target.getAttribute('data-item');
       const field = e.target.getAttribute('data-field');
