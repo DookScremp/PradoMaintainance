@@ -1,73 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Prado KDJ150 1KD-FTV Maintenance Schedule</title>
-<link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#eb0a1e">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-
-<link rel="stylesheet" href="/app.css">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prado KDJ150 1KD-FTV Maintenance Schedule</title>
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#eb0a1e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="stylesheet" href="./app.css">
 </head>
 <body>
+  <div class="header-container">
+    <button class="nav-btn" id="bulk-toggle" title="Bulk Update History">📝 Bulk Edit</button>
+    <h1>Prado 150 Schedule</h1>
+    <button class="nav-btn theme-toggle" id="theme-toggle" title="Toggle Dark Mode">🌓</button>
+  </div>
+  <div class="subtitle">3.0L Turbo Diesel | 5-Speed Auto | 0–1,000,000 km</div>
 
-<div class="header-container">
-  <button class="nav-btn" id="bulk-toggle" title="Bulk Update History">📝 Bulk Edit</button>
-  <h1>Prado 150 Schedule</h1>
-  <button class="nav-btn theme-toggle" id="theme-toggle" title="Toggle Dark Mode">🌓</button>
-</div>
-<div class="subtitle">3.0L Turbo Diesel | 5-Speed Auto | 0–1,000,000 km</div>
+  <div id="main-view">
+    <div class="control-group">
+      <label for="km-select">Select Odometer Reading (km)</label>
 
-<!-- MAIN APP VIEW -->
-<div id="main-view">
-  <div class="control-group">
-    <label for="km-select">Select Odometer Reading (km)</label>
-    <select id="km-select">
-      <!-- Populated by app.js -->
-    </select>
-    
-    <div class="checkbox-group">
-      <label class="checkbox-label">
-        <input type="checkbox" id="additional-check" checked>
-        Include Additional Maintenance (Off-Road/Heavy Duty)
-      </label>
-      <label class="checkbox-label">
-        <input type="checkbox" id="anthony-check" class="anthony-cb" checked>
-        Include Anthony's Advice (FourbyFour)
-      </label>
+      <!-- Hidden native select (kept for compatibility) -->
+      <select id="km-select" style="display:none"></select>
+
+      <!-- Custom dropdown button that opens modal -->
+      <div class="custom-dropdown">
+        <button id="km-dropdown-btn" class="km-dropdown-btn" type="button" aria-haspopup="dialog" aria-expanded="false">
+          <span id="km-dropdown-label">-- Tap to Select Interval --</span>
+          <span class="chev">▾</span>
+        </button>
+      </div>
+
+      <div class="checkbox-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="additional-check" checked>
+          Include Additional Maintenance (Off-Road/Heavy Duty)
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="anthony-check" class="anthony-cb" checked>
+          Include Anthony's Advice (FourbyFour)
+        </label>
+      </div>
+    </div>
+
+    <div id="results"></div>
+
+    <div class="control-group" id="data-management">
+      <label>Service History Backup & Data</label>
+      <p style="font-size: 12px; color: var(--text-muted); margin-top: 0;">Export your notes and dates before changing phones, or import a saved backup.</p>
+      <div class="btn-group">
+        <button class="btn btn-export" type="button">Export</button>
+        <button class="btn btn-import" type="button">Import</button>
+        <button class="btn btn-clear" type="button">Clear Data</button>
+        <input type="file" id="import-file" accept=".json" style="display:none">
+      </div>
     </div>
   </div>
 
-  <div id="results"></div>
-
-  <div class="control-group" id="data-management">
-    <label>Service History Backup & Data</label>
-    <p style="font-size: 12px; color: var(--text-muted); margin-top: 0;">Export your notes and dates before changing phones, or import a saved backup.</p>
-    <div class="btn-group">
-      <button class="btn btn-export" id="export-btn">Export</button>
-      <button class="btn btn-import" id="import-btn">Import</button>
-      <button class="btn btn-clear" id="clear-btn">Clear Data</button>
-      <input type="file" id="import-file" accept=".json" style="display:none">
+  <div id="bulk-view">
+    <div class="control-group">
+      <h3 style="margin-top: 0; color: var(--text-main); margin-bottom: 4px;">Bulk Entry Mode</h3>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; margin-top: 0;">Quickly backfill your service history. Checking a box automatically applies today's date if empty.</p>
+      <div id="bulk-list"></div>
     </div>
   </div>
-</div>
 
-<!-- BULK EDIT VIEW -->
-<div id="bulk-view" style="display: none;">
-  <div class="control-group">
-    <h3 style="margin-top: 0; color: var(--text-main); margin-bottom: 4px;">Bulk Entry Mode</h3>
-    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; margin-top: 0;">Quickly backfill your service history. Checking a box automatically applies today's date if empty.</p>
-    <div id="bulk-list">
-      <!-- Populated by app.js -->
+  <!-- Custom KM modal -->
+  <div id="km-modal" class="km-modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="km-modal-title">
+    <div class="km-modal" role="document">
+      <div class="km-modal-header">
+        <h2 id="km-modal-title">Select Interval</h2>
+        <button id="km-modal-close" class="km-modal-close" aria-label="Close">✕</button>
+      </div>
+      <div class="km-modal-search">
+        <input id="km-search" class="km-search" type="search" placeholder="Search km (e.g. 10,000)" aria-label="Search intervals">
+      </div>
+      <div class="km-list" id="km-list" tabindex="0" role="listbox" aria-label="Interval list"></div>
     </div>
   </div>
-</div>
 
-<script src="/rules.js"></script>
-<script src="/storage.js"></script>
-<script src="/app.js"></script>
+  <script src="./rules.js"></script>
+  <script src="./storage.js"></script>
+  <script src="./app.js"></script>
 </body>
 </html>
