@@ -1,5 +1,5 @@
 // sw.js - simple versioned cache with conservative strategy
-const CACHE_NAME = 'prado-schedule-v1';
+const CACHE_NAME = 'prado-schedule-v2';
 const ASSETS = ['/','/index.html','/app.css','/app.js','/rules.js','/storage.js','/manifest.json'];
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS)).then(self.skipWaiting()));
