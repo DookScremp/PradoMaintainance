@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Prado KDJ150 1KD-FTV Maintenance Schedule</title>
 
+<!-- Assistant test comment: added by GitHub Copilot (DookScremp) on 2026-10-15 -->
+
 <!-- PWA Manifest & Theme Settings -->
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#eb0a1e">
@@ -43,12 +45,12 @@
     --meta-text: #34d399;
   }
 
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 20px; max-width: 650px; margin: 0 auto; background: var(--bg-color); color: var(--text-main); transition: background 0.3s, color 0.3s; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 20px; max-width: 650px; margin: 0 auto; background: var(--bg-color); color: var(--text-main); tran[...]
   
   /* Header & Centered Title */
   .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; position: relative; height: 40px; }
-  h1 { font-size: 18px; color: #eb0a1e; margin: 0; font-weight: 700; position: absolute; left: 50%; transform: translateX(-50%); text-align: center; width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .nav-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 13px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-weight: 600; white-space: nowrap; z-index: 2; }
+  h1 { font-size: 18px; color: #eb0a1e; margin: 0; font-weight: 700; position: absolute; left: 50%; transform: translateX(-50%); text-align: center; width: 60%; white-space: nowrap; overflow: hidd[...]
+  .nav-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 13px; box-shadow: 0 2px [...]
   .theme-toggle { font-size: 15px; }
   .subtitle { text-align: center; font-size: 13px; color: var(--text-muted); margin-bottom: 20px; font-weight: 500; }
   
@@ -56,7 +58,7 @@
   label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; color: var(--text-main); }
   
   /* Reduced font size for dropdown to fit icons neatly */
-  select { width: 100%; padding: 10px 12px; font-size: 13px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 16px; background: var(--input-bg); color: var(--input-text); appearance: none; }
+  select { width: 100%; padding: 10px 12px; font-size: 13px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 16px; background: var(--input-bg); color: var(--input-text); [...]
   
   .checkbox-group { display: flex; flex-direction: column; gap: 12px; }
   .checkbox-label { display: flex; align-items: center; font-weight: 500; font-size: 14px; cursor: pointer; color: var(--text-main); }
@@ -65,7 +67,7 @@
   
   /* Dynamic Card Colors */
   .card { background: var(--card-bg); padding: 14px 16px; margin-bottom: 12px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
-  .card-meta { border-left: 5px solid #10b981; background: var(--meta-bg); border-top: 1px solid var(--meta-border); border-right: 1px solid var(--meta-border); border-bottom: 1px solid var(--meta-border); margin-bottom: 20px; }
+  .card-meta { border-left: 5px solid #10b981; background: var(--meta-bg); border-top: 1px solid var(--meta-border); border-right: 1px solid var(--meta-border); border-bottom: 1px solid var(--meta[...]
   .card-standard { border-left: 5px solid #eb0a1e; }
   .card-additional { border-left: 5px solid #f97316; }
   .card-anthony { border-left: 5px solid #3b82f6; }
@@ -78,7 +80,7 @@
   .badge-anthony { background: #dbeafe; color: #1d4ed8; }
 
   .card p { margin: 3px 0; color: var(--text-muted); font-size: 13px; }
-  .part-no { display: inline-block; background: var(--part-bg); color: var(--part-text); padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 12px; font-weight: 600; margin-top: 4px; }
+  .part-no { display: inline-block; background: var(--part-bg); color: var(--part-text); padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 12px; font-weight: 600; margin-top[...]
   .action-replace { color: #ef4444; font-weight: 700; }
   .action-inspect { color: #f59e0b; font-weight: 700; }
   .action-lubricate { color: #3b82f6; font-weight: 700; }
@@ -90,8 +92,8 @@
   .input-row label { font-size: 14px; margin-bottom: 0; display: flex; align-items: center; cursor: pointer; color: var(--text-main); }
   .input-row label input { margin-right: 8px; width: 18px; height: 18px; accent-color: #10b981; }
   
-  .date-input { -webkit-appearance: none; appearance: none; padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; color: var(--input-text); background: var(--input-bg); width: 100%; box-sizing: border-box; height: 36px; line-height: 20px; }
-  .note-input { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; font-family: inherit; resize: vertical; min-height: 50px; box-sizing: border-box; background: var(--input-bg); color: var(--input-text); }
+  .date-input { -webkit-appearance: none; appearance: none; padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; color: var(--input-text); background: var(--in[...]
+  .note-input { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; font-family: inherit; resize: vertical; min-height: 50px; box-sizing: border[...]
   
   /* Bulk Entry UI */
   .bulk-row { display: flex; align-items: flex-start; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
@@ -100,7 +102,7 @@
   .bulk-cb-wrapper { display: flex; align-items: center; justify-content: center; margin-top: 10px; }
   .bulk-checkbox { width: 22px; height: 22px; accent-color: #10b981; margin: 0; }
   .bulk-inputs { display: flex; gap: 8px; }
-  .bulk-input { -webkit-appearance: none; appearance: none; padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; background: var(--input-bg); color: var(--input-text); width: 100%; box-sizing: border-box; height: 36px; line-height: 20px; }
+  .bulk-input { -webkit-appearance: none; appearance: none; padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; background: var(--input-bg); color: var(--inp[...]
   
   /* Backup Buttons */
   .btn-group { display: flex; gap: 10px; margin-top: 12px; }
@@ -157,7 +159,7 @@
 <div id="bulk-view" style="display: none;">
   <div class="control-group">
     <h3 style="margin-top: 0; color: var(--text-main); margin-bottom: 4px;">Bulk Entry Mode</h3>
-    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; margin-top: 0;">Quickly backfill your service history. Checking a box automatically applies today's date if empty.</p>
+    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; margin-top: 0;">Quickly backfill your service history. Checking a box automatically applies today's date if empty.</p[...]
     <div id="bulk-list">
       <!-- Populated by JS -->
     </div>
@@ -229,33 +231,33 @@
 
   const rules = [
     { item: "Engine Oil & Filter (Always change together)", standard: 10000, additional: 5000, action: "Replace", category: "Engine", part: "90915-20003 (Filter)" },
-    { item: "Oil Pickup Screen Inspection", standard: 10000, additional: 5000, action: "Inspect (Check for carbon buildup via sump drain hole with camera)", category: "Engine", part: "N/A", isAnthony: true },
-    { item: "Injector Feedback Values & Cold Start Knock Check", standard: 10000, additional: 10000, action: "Inspect (Check diagnostics/diagnose cold start rattle)", category: "Engine", part: "N/A", isAnthony: true },
+    { item: "Oil Pickup Screen Inspection", standard: 10000, additional: 5000, action: "Inspect (Check for carbon buildup via sump drain hole with camera)", category: "Engine", part: "N/A", isAnt[...]
+    { item: "Injector Feedback Values & Cold Start Knock Check", standard: 10000, additional: 10000, action: "Inspect (Check diagnostics/diagnose cold start rattle)", category: "Engine", part: "N[...]
     { item: "Diff & Drivetrain Breather Hose Inspection", standard: 10000, additional: 5000, action: "Inspect hoses, body routing & clean filter caps", category: "Chassis & Body", part: "N/A" },
-    { item: "Secondary Flashlube Pre-Filter Water Drain", standard: 10000, additional: 5000, action: "Inspect clear bowl & drain water/sediment via bottom tap (Replace early if contaminated)", category: "Fuel System", part: "N/A", isAnthony: true },
-    { item: "Under-Bonnet OEM Primary Fuel Filter", standard: 20000, additional: 20000, action: "Replace (Replace earlier if water or debris is found)", category: "Fuel System", part: "23390-30350" },
-    { item: "Secondary Flashlube Pre-Filter Element (30u)", standard: 20000, additional: 20000, action: "Replace element & clean bowl (Replace earlier if contaminated)", category: "Fuel System", part: "Flashlube FDF30 (or Direction-Plus FM100)", isAnthony: true },
+    { item: "Secondary Flashlube Pre-Filter Water Drain", standard: 10000, additional: 5000, action: "Inspect clear bowl & drain water/sediment via bottom tap (Replace early if contaminated)", ca[...]
+    { item: "Under-Bonnet OEM Primary Fuel Filter", standard: 20000, additional: 20000, action: "Replace (Replace earlier if water or debris is found)", category: "Fuel System", part: "23390-3035[...]
+    { item: "Secondary Flashlube Pre-Filter Element (30u)", standard: 20000, additional: 20000, action: "Replace element & clean bowl (Replace earlier if contaminated)", category: "Fuel System", [...]
     { item: "Under-Car Sub-Tank Fuel Filter", standard: 20000, additional: 20000, action: "Replace", category: "Fuel System", part: "23300-30090" },
     { item: "Water Sediment Accumulator", standard: 10000, additional: 10000, action: "Inspect / Drain water", category: "Fuel System", part: "N/A" },
-    { item: "MAP Sensor & Inline Filter (Clean)", standard: 20000, additional: 20000, action: "Clean (Clean MAP sensor port and spray inline filter)", category: "Engine", part: "N/A", isAnthony: true },
+    { item: "MAP Sensor & Inline Filter (Clean)", standard: 20000, additional: 20000, action: "Clean (Clean MAP sensor port and spray inline filter)", category: "Engine", part: "N/A", isAnthony: [...]
     { item: "MAP Sensor Inline Filter (Replace)", standard: 40000, additional: 40000, action: "Replace", category: "Engine", part: "90917-11036", isAnthony: true },
     { item: "Drive Belts", standard: 20000, additional: 20000, action: "Inspect", category: "Engine", part: "7PK1930" },
     { item: "Valve Clearance Check", standard: 40000, additional: 40000, action: "Inspect clearance", category: "Engine", part: "Gasket set: 11213-30020" },
-    { item: "Injector Seat Washers & Seals (Standalone Clean & Reseal)", standard: 100000, additional: 100000, action: "Replace copper washers, O-rings & leak-off pipe seals (if injectors test OK)", category: "Engine", part: "11176-30011 (Washers) / 23681-30010 (Seals)", isAnthony: true },
-    { item: "Timing Belt, Water Pump, Thermostat & Pulleys", standard: 150000, additional: 150000, action: "Replace belt, tensioner, water pump, thermostat, and drive belt pulleys", category: "Engine", part: "13568-39016 (Belt) / 16100-39466 (Pump) / 90916-03140 (Thermostat)" },
+    { item: "Injector Seat Washers & Seals (Standalone Clean & Reseal)", standard: 100000, additional: 100000, action: "Replace copper washers, O-rings & leak-off pipe seals (if injectors test OK[...]
+    { item: "Timing Belt, Water Pump, Thermostat & Pulleys", standard: 150000, additional: 150000, action: "Replace belt, tensioner, water pump, thermostat, and drive belt pulleys", category: "En[...]
     { item: "Timing Belt Cover / Seal", standard: 30000, additional: 30000, action: "Inspect cover & seal", category: "Engine", part: "N/A" },
-    { item: "Engine Coolant (Toyota Super Long Life)", standard: null, additional: null, action: "Replace", category: "Engine", part: "08889-80072 (Pink SLLC)", custom: (km) => km === 160000 || (km > 160000 && (km - 160000) % 80000 === 0) },
-    { item: "Full Injector Assembly Replacement", standard: 200000, additional: 200000, action: "Replace complete set of 4 common-rail injectors & pipes", category: "Engine", part: "23670-39365 (DLC Injectors)", isAnthony: true },
-    { item: "EGR / Intake Manifold Clean & KAON 7mm Plate", standard: 200000, additional: 200000, action: "Clean manifold/EGR cooler & install KAON 7mm restrictor plate", category: "Engine", part: "KAON 7mm Plate / Gaskets: 25628-30020", isAnthony: true },
+    { item: "Engine Coolant (Toyota Super Long Life)", standard: null, additional: null, action: "Replace", category: "Engine", part: "08889-80072 (Pink SLLC)", custom: (km) => km === 160000 || ([...]
+    { item: "Full Injector Assembly Replacement", standard: 200000, additional: 200000, action: "Replace complete set of 4 common-rail injectors & pipes", category: "Engine", part: "23670-39365 ([...]
+    { item: "EGR / Intake Manifold Clean & KAON 7mm Plate", standard: 200000, additional: 200000, action: "Clean manifold/EGR cooler & install KAON 7mm restrictor plate", category: "Engine", part[...]
     { item: "Engine Air Cleaner Filter", standard: 30000, additional: 30000, action: "Replace", category: "Engine", part: "17801-30080" },
-    { item: "Engine Air Cleaner Filter (Dusty Conditions)", standard: null, additional: 2500, action: "Inspect & clean", category: "Engine", part: "17801-30080", custom: (km, add) => add && km % 2500 === 0 && km % 30000 !== 0 },
+    { item: "Engine Air Cleaner Filter (Dusty Conditions)", standard: null, additional: 2500, action: "Inspect & clean", category: "Engine", part: "17801-30080", custom: (km, add) => add && km % [...]
     { item: "Air Flow Meter Sensor (MAF)", standard: 60000, additional: 60000, action: "Clean intermittently with MAF cleaner", category: "Engine", part: "22204-0V010" },
     { item: "Brake Pads & Discs", standard: 10000, additional: 5000, action: "Inspect", category: "Chassis & Body", part: "04465-60280 (Front) / 04466-60140 (Rear)" },
     { item: "Brake Fluid", standard: 40000, additional: 40000, action: "Replace", category: "Chassis & Body", part: "DOT 4 Brake Fluid" },
-    { item: "Propeller Shaft Grease (Driveshafts & Universal Joints)", standard: 10000, additional: 5000, action: "Lubricate (Lithium Grease NLGI No. 2)", category: "Chassis & Body", part: "08887-00101" },
+    { item: "Propeller Shaft Grease (Driveshafts & Universal Joints)", standard: 10000, additional: 5000, action: "Lubricate (Lithium Grease NLGI No. 2)", category: "Chassis & Body", part: "08887[...]
     { item: "Propeller Shaft Flange Bolts", standard: 10000, additional: 5000, action: "Tighten", category: "Chassis & Body", part: "N/A" },
     { item: "Drive Shaft Boots", standard: 20000, additional: 10000, action: "Inspect", category: "Chassis & Body", part: "04427-60140" },
-    { item: "Automatic Transmission Fluid (A750F)", standard: 80000, additional: 40000, action: "Drain & Fill / Partial Fluid Refresh", category: "Chassis & Body", part: "08886-02305 (Toyota ATF WS)" },
+    { item: "Automatic Transmission Fluid (A750F)", standard: 80000, additional: 40000, action: "Drain & Fill / Partial Fluid Refresh", category: "Chassis & Body", part: "08886-02305 (Toyota ATF [...]
     { item: "Transfer Case Oil", standard: 40000, additional: 40000, action: "Replace", category: "Chassis & Body", part: "08885-81081 (75W LF Synthetic)" },
     { item: "Front Differential Oil", standard: 40000, additional: 20000, action: "Replace", category: "Chassis & Body", part: "08885-02106 (LT 75W-85 GL-5)" },
     { item: "Rear Differential Oil", standard: 40000, additional: 20000, action: "Replace", category: "Chassis & Body", part: "08885-02106 (LT 75W-85 GL-5)" },
@@ -380,7 +382,7 @@
               Task Completed
             </label>
           </div>
-          <textarea class="note-input db-input" placeholder="Add service notes or part brands used..." data-km="${km}" data-item="${task.item.replace(/"/g, '&quot;')}" data-field="notes">${taskData.notes}</textarea>
+          <textarea class="note-input db-input" placeholder="Add service notes or part brands used..." data-km="${km}" data-item="${task.item.replace(/"/g, '&quot;')}" data-field="notes">${taskDa[...]
         </div>
       `;
       resultsDiv.appendChild(card);
