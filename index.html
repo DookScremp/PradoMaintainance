@@ -213,7 +213,7 @@
       let text = i.toLocaleString() + ' km';
       
       if (meta.actualKm) { text += ` (Actual: ${meta.actualKm} km)`; }
-      if (meta.notes && meta.notes.trim() !== '') { text += ' 📝'; }
+      if (meta.notes && meta.notes.trim() !== '') { text += ' (Notes)'; }
       if (meta.completed) { text = '✅ ' + text; }
       
       option.text = text;
