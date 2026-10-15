@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Prado KDJ150 1KD-FTV Maintenance Schedule</title>
 
-
 <!-- PWA Manifest & Theme Settings -->
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#eb0a1e">
@@ -19,16 +18,45 @@
   .control-group { background: #ffffff; padding: 18px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
   label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; }
   select { width: 100%; padding: 12px; font-size: 15px; border: 1px solid #d1d5db; border-radius: 8px; margin-bottom: 16px; background: #fff; appearance: none; }
+  
+  .checkbox-group { display: flex; flex-direction: column; gap: 12px; }
   .checkbox-label { display: flex; align-items: center; font-weight: 500; font-size: 14px; cursor: pointer; color: #374151; }
   .checkbox-label input { width: 20px; height: 20px; margin-right: 10px; accent-color: #eb0a1e; }
-  .card { background: #fff; border-left: 5px solid #eb0a1e; padding: 14px 16px; margin-bottom: 12px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
-  .card h3 { margin: 0 0 6px 0; font-size: 15px; color: #111827; }
+  .checkbox-label input.anthony-cb { accent-color: #3b82f6; }
+  
+  /* Dynamic Card Colors */
+  .card { background: #fff; padding: 14px 16px; margin-bottom: 12px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
+  .card-standard { border-left: 5px solid #eb0a1e; }
+  .card-additional { border-left: 5px solid #f97316; }
+  .card-anthony { border-left: 5px solid #3b82f6; }
+  
+  /* Badges */
+  .card-title-wrapper { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 6px; gap: 8px; }
+  .card-title-wrapper h3 { margin: 0; font-size: 15px; color: #111827; line-height: 1.3; }
+  .badge { font-size: 10px; font-weight: 700; padding: 3px 6px; border-radius: 4px; text-transform: uppercase; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+  .badge-additional { background: #ffedd5; color: #c2410c; }
+  .badge-anthony { background: #dbeafe; color: #1d4ed8; }
+
   .card p { margin: 3px 0; color: #4b5563; font-size: 13px; }
   .part-no { display: inline-block; background: #f3f4f6; color: #1f2937; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 12px; font-weight: 600; margin-top: 4px; }
   .action-replace { color: #dc2626; font-weight: 700; }
   .action-inspect { color: #d97706; font-weight: 700; }
   .action-lubricate { color: #2563eb; font-weight: 700; }
   .empty-state { text-align: center; padding: 35px 20px; color: #6b7280; font-size: 14px; background: #fff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+  
+  /* Database UI Styles */
+  .task-inputs { margin-top: 14px; padding-top: 12px; border-top: 1px solid #e5e7eb; }
+  .input-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .input-row label { font-size: 14px; margin-bottom: 0; display: flex; align-items: center; cursor: pointer; color: #111827; }
+  .input-row label input { margin-right: 8px; width: 18px; height: 18px; accent-color: #10b981; }
+  .date-input { padding: 6px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; color: #374151; background: #f9fafb; }
+  .note-input { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: inherit; resize: vertical; min-height: 60px; box-sizing: border-box; background: #f9fafb; }
+  
+  /* Backup Buttons */
+  .btn-group { display: flex; gap: 10px; margin-top: 12px; }
+  .btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; text-align: center; }
+  .btn-export { background: #dbeafe; color: #1e40af; }
+  .btn-import { background: #fef3c7; color: #92400e; }
 </style>
 </head>
 <body>
@@ -42,24 +70,44 @@
     <option value="">-- Tap to Select Interval --</option>
   </select>
   
-  <label class="checkbox-label">
-    <input type="checkbox" id="additional-check" checked>
-    Include Additional Maintenance (Off-Road / Heavy Duty)
-  </label>
+  <div class="checkbox-group">
+    <label class="checkbox-label">
+      <input type="checkbox" id="additional-check" checked>
+      Include Additional Maintenance (Off-Road/Heavy Duty)
+    </label>
+    <label class="checkbox-label">
+      <input type="checkbox" id="anthony-check" class="anthony-cb" checked>
+      Include Anthony's Advice (FourbyFour Victorians)
+    </label>
+  </div>
 </div>
 
 <div id="results">
   <div class="empty-state">Select an interval above to view required service items.</div>
 </div>
 
+<div class="control-group" id="data-management" style="display: none;">
+  <label>Service History Backup</label>
+  <p style="font-size: 12px; color: #6b7280; margin-top: 0;">Export your notes and dates before changing phones, or import a saved backup.</p>
+  <div class="btn-group">
+    <button class="btn btn-export" onclick="exportData()">Export Backup</button>
+    <button class="btn btn-import" onclick="document.getElementById('import-file').click()">Import Backup</button>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+  </div>
+</div>
+
 <script>
   // PWA Service Worker Registration
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .catch(err => console.log('Service Worker registration failed:', err));
+      navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW failed:', err));
     });
   }
+
+  // Database Initialization
+  const DB_KEY = 'prado_maintenance_db';
+  function getDB() { return JSON.parse(localStorage.getItem(DB_KEY)) || {}; }
+  function saveDB(data) { localStorage.setItem(DB_KEY, JSON.stringify(data)); }
 
   // Populate Dropdown
   const select = document.getElementById('km-select');
@@ -73,24 +121,24 @@
   // Maintenance Rules Set
   const rules = [
     { item: "Engine Oil & Filter (Always change together)", standard: 10000, additional: 5000, action: "Replace", category: "Engine", part: "90915-20003 (Filter)" },
-    { item: "Oil Pickup Screen Inspection", standard: 10000, additional: 5000, action: "Inspect (Check for carbon buildup via sump drain hole with camera)", category: "Engine", part: "N/A" },
-    { item: "Injector Feedback Values & Cold Start Knock Check", standard: 10000, additional: 10000, action: "Inspect (Check diagnostics/diagnose cold start rattle)", category: "Engine", part: "N/A" },
+    { item: "Oil Pickup Screen Inspection", standard: 10000, additional: 5000, action: "Inspect (Check for carbon buildup via sump drain hole with camera)", category: "Engine", part: "N/A", isAnthony: true },
+    { item: "Injector Feedback Values & Cold Start Knock Check", standard: 10000, additional: 10000, action: "Inspect (Check diagnostics/diagnose cold start rattle)", category: "Engine", part: "N/A", isAnthony: true },
     { item: "Diff & Drivetrain Breather Hose Inspection", standard: 10000, additional: 5000, action: "Inspect hoses, body routing & clean filter caps", category: "Chassis & Body", part: "N/A" },
-    { item: "Secondary Flashlube Pre-Filter Water Drain", standard: 10000, additional: 5000, action: "Inspect clear bowl & drain water/sediment via bottom tap (Replace early if contaminated)", category: "Fuel System", part: "N/A" },
+    { item: "Secondary Flashlube Pre-Filter Water Drain", standard: 10000, additional: 5000, action: "Inspect clear bowl & drain water/sediment via bottom tap (Replace early if contaminated)", category: "Fuel System", part: "N/A", isAnthony: true },
     { item: "Under-Bonnet OEM Primary Fuel Filter", standard: 20000, additional: 20000, action: "Replace (Replace earlier if water or debris is found)", category: "Fuel System", part: "23390-30350" },
-    { item: "Secondary Flashlube Pre-Filter Element (30u)", standard: 20000, additional: 20000, action: "Replace element & clean bowl (Replace earlier if contaminated)", category: "Fuel System", part: "Flashlube FDF30 (or Direction-Plus FM100)" },
+    { item: "Secondary Flashlube Pre-Filter Element (30u)", standard: 20000, additional: 20000, action: "Replace element & clean bowl (Replace earlier if contaminated)", category: "Fuel System", part: "Flashlube FDF30 (or Direction-Plus FM100)", isAnthony: true },
     { item: "Under-Car Sub-Tank Fuel Filter", standard: 20000, additional: 20000, action: "Replace", category: "Fuel System", part: "23300-30090" },
     { item: "Water Sediment Accumulator", standard: 10000, additional: 10000, action: "Inspect / Drain water", category: "Fuel System", part: "N/A" },
-    { item: "MAP Sensor & Inline Filter (Clean)", standard: 20000, additional: 20000, action: "Clean (Clean MAP sensor port and spray inline filter)", category: "Engine", part: "N/A" },
-    { item: "MAP Sensor Inline Filter (Replace)", standard: 40000, additional: 40000, action: "Replace", category: "Engine", part: "90917-11036" },
+    { item: "MAP Sensor & Inline Filter (Clean)", standard: 20000, additional: 20000, action: "Clean (Clean MAP sensor port and spray inline filter)", category: "Engine", part: "N/A", isAnthony: true },
+    { item: "MAP Sensor Inline Filter (Replace)", standard: 40000, additional: 40000, action: "Replace", category: "Engine", part: "90917-11036", isAnthony: true },
     { item: "Drive Belts", standard: 20000, additional: 20000, action: "Inspect", category: "Engine", part: "7PK1930" },
     { item: "Valve Clearance Check", standard: 40000, additional: 40000, action: "Inspect clearance", category: "Engine", part: "Gasket set: 11213-30020" },
-    { item: "Injector Seat Washers & Seals (Standalone Clean & Reseal)", standard: 100000, additional: 100000, action: "Replace copper washers, O-rings & leak-off pipe seals (if injectors test OK)", category: "Engine", part: "11176-30011 (Washers) / 23681-30010 (Seals)" },
+    { item: "Injector Seat Washers & Seals (Standalone Clean & Reseal)", standard: 100000, additional: 100000, action: "Replace copper washers, O-rings & leak-off pipe seals (if injectors test OK)", category: "Engine", part: "11176-30011 (Washers) / 23681-30010 (Seals)", isAnthony: true },
     { item: "Timing Belt, Water Pump, Thermostat & Pulleys", standard: 150000, additional: 150000, action: "Replace belt, tensioner, water pump, thermostat, and drive belt pulleys", category: "Engine", part: "13568-39016 (Belt) / 16100-39466 (Pump) / 90916-03140 (Thermostat)" },
     { item: "Timing Belt Cover / Seal", standard: 30000, additional: 30000, action: "Inspect cover & seal", category: "Engine", part: "N/A" },
     { item: "Engine Coolant (Toyota Super Long Life)", standard: null, additional: null, action: "Replace", category: "Engine", part: "08889-80072 (Pink SLLC)", custom: (km) => km === 160000 || (km > 160000 && (km - 160000) % 80000 === 0) },
-    { item: "Full Injector Assembly Replacement", standard: 200000, additional: 200000, action: "Replace complete set of 4 common-rail injectors & pipes", category: "Engine", part: "23670-39365 (DLC Injectors)" },
-    { item: "EGR / Intake Manifold Clean & KAON 7mm Plate", standard: 200000, additional: 200000, action: "Clean manifold/EGR cooler & install KAON 7mm restrictor plate", category: "Engine", part: "KAON 7mm Plate / Gaskets: 25628-30020" },
+    { item: "Full Injector Assembly Replacement", standard: 200000, additional: 200000, action: "Replace complete set of 4 common-rail injectors & pipes", category: "Engine", part: "23670-39365 (DLC Injectors)", isAnthony: true },
+    { item: "EGR / Intake Manifold Clean & KAON 7mm Plate", standard: 200000, additional: 200000, action: "Clean manifold/EGR cooler & install KAON 7mm restrictor plate", category: "Engine", part: "KAON 7mm Plate / Gaskets: 25628-30020", isAnthony: true },
     { item: "Engine Air Cleaner Filter", standard: 30000, additional: 30000, action: "Replace", category: "Engine", part: "17801-30080" },
     { item: "Engine Air Cleaner Filter (Dusty Conditions)", standard: null, additional: 2500, action: "Inspect & clean", category: "Engine", part: "17801-30080", custom: (km, add) => add && km % 2500 === 0 && km % 30000 !== 0 },
     { item: "Air Flow Meter Sensor (MAF)", standard: 60000, additional: 60000, action: "Clean intermittently with MAF cleaner", category: "Engine", part: "22204-0V010" },
@@ -118,33 +166,58 @@
   function renderTasks() {
     const kmStr = document.getElementById('km-select').value;
     const includeAdditional = document.getElementById('additional-check').checked;
+    const includeAnthony = document.getElementById('anthony-check').checked;
     const resultsDiv = document.getElementById('results');
+    const db = getDB();
     
     if (!kmStr) {
       resultsDiv.innerHTML = '<div class="empty-state">Select an interval above to view required service items.</div>';
+      document.getElementById('data-management').style.display = 'none';
       return;
     }
 
+    document.getElementById('data-management').style.display = 'block';
     const km = parseInt(kmStr);
     let tasks = [];
 
     rules.forEach(rule => {
       let isActionable = false;
+      let matchType = 'standard';
       let currentAction = rule.action;
 
-      if (rule.custom) {
-        isActionable = rule.custom(km, includeAdditional);
+      if (rule.isAnthony) {
+        if (!includeAnthony) return; // Skip if Anthony is unchecked
+        
+        if (rule.custom) {
+          isActionable = rule.custom(km, includeAdditional);
+        } else if (includeAdditional && rule.additional && km % rule.additional === 0) {
+          isActionable = true;
+        } else if (rule.standard && km % rule.standard === 0) {
+          isActionable = true;
+        }
+        if (isActionable) matchType = 'anthony';
       } else {
-        if (includeAdditional && rule.additional && km % rule.additional === 0) {
-          isActionable = true;
-        } 
-        else if (rule.standard && km % rule.standard === 0) {
-          isActionable = true;
+        if (rule.custom) {
+          if (rule.custom(km, includeAdditional)) {
+            isActionable = true;
+            matchType = rule.custom(km, false) ? 'standard' : 'additional';
+          }
+        } else {
+          const hitsStandard = rule.standard && km % rule.standard === 0;
+          const hitsAdditional = includeAdditional && rule.additional && km % rule.additional === 0;
+          
+          if (hitsStandard) {
+            isActionable = true;
+            matchType = 'standard';
+          } else if (hitsAdditional) {
+            isActionable = true;
+            matchType = 'additional';
+          }
         }
       }
 
-      if (isActionable) {
-        tasks.push({ ...rule, action: currentAction });
+      if (isActionable) { 
+        tasks.push({ ...rule, action: currentAction, matchType: matchType }); 
       }
     });
 
@@ -156,20 +229,89 @@
     }
 
     tasks.forEach(task => {
+      const taskData = (db[km] && db[km][task.item]) ? db[km][task.item] : { checked: false, date: '', notes: '' };
+      
+      let badgeHtml = '';
+      if (task.matchType === 'additional') badgeHtml = '<span class="badge badge-additional">Severe / Off-Road</span>';
+      if (task.matchType === 'anthony') badgeHtml = '<span class="badge badge-anthony">Anthony\'s Advice</span>';
+
       const card = document.createElement('div');
-      card.className = 'card';
+      card.className = `card card-${task.matchType}`;
       card.innerHTML = `
-        <h3>${task.item}</h3>
+        <div class="card-title-wrapper">
+          <h3>${task.item}</h3>
+          ${badgeHtml}
+        </div>
         <p><strong>Category:</strong> ${task.category}</p>
         <p><strong>Action required:</strong> <span class="${getActionClass(task.action)}">${task.action}</span></p>
         ${task.part !== "N/A" ? `<p><strong>OEM / Ref Part:</strong> <span class="part-no">${task.part}</span></p>` : ''}
+        
+        <div class="task-inputs">
+          <div class="input-row">
+            <label>
+              <input type="checkbox" class="db-input" data-km="${km}" data-item="${task.item.replace(/"/g, '&quot;')}" data-field="checked" ${taskData.checked ? 'checked' : ''}> 
+              Completed
+            </label>
+            <input type="date" class="date-input db-input" data-km="${km}" data-item="${task.item.replace(/"/g, '&quot;')}" data-field="date" value="${taskData.date}">
+          </div>
+          <textarea class="note-input db-input" placeholder="Add service notes or part brands used..." data-km="${km}" data-item="${task.item.replace(/"/g, '&quot;')}" data-field="notes">${taskData.notes}</textarea>
+        </div>
       `;
       resultsDiv.appendChild(card);
     });
   }
 
+  // Event Delegation to save data instantly
+  document.getElementById('results').addEventListener('input', (e) => {
+    if (e.target.classList.contains('db-input')) {
+      const km = e.target.getAttribute('data-km');
+      const item = e.target.getAttribute('data-item');
+      const field = e.target.getAttribute('data-field');
+      const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+      
+      const db = getDB();
+      if (!db[km]) db[km] = {};
+      if (!db[km][item]) db[km][item] = { checked: false, date: '', notes: '' };
+      
+      db[km][item][field] = value;
+      saveDB(db);
+    }
+  });
+
+  function exportData() {
+    const db = localStorage.getItem(DB_KEY) || "{}";
+    const blob = new Blob([db], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Prado_Service_Backup_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const json = JSON.parse(e.target.result);
+        saveDB(json);
+        alert("Service history backup restored successfully!");
+        renderTasks(); 
+      } catch (err) {
+        alert("Invalid backup file.");
+      }
+      event.target.value = '';
+    };
+    reader.readAsText(file);
+  }
+
   document.getElementById('km-select').addEventListener('change', renderTasks);
   document.getElementById('additional-check').addEventListener('change', renderTasks);
+  document.getElementById('anthony-check').addEventListener('change', renderTasks);
 </script>
 </body>
 </html>
