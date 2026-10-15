@@ -47,8 +47,9 @@
   
   /* Header & Theme Toggle */
   .header-container { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
-  h1 { font-size: 20px; color: #eb0a1e; margin: 0; font-weight: 700; flex: 1; text-align: center; }
-  .theme-toggle { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+  h1 { font-size: 20px; color: #eb0a1e; margin: 0; font-weight: 700; flex: 1; text-align: center; line-height: 1.5; }
+  .nav-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-weight: 600; white-space: nowrap; }
+  .theme-toggle { font-size: 16px; }
   .subtitle { text-align: center; font-size: 13px; color: var(--text-muted); margin-bottom: 20px; font-weight: 500; }
   
   .control-group { background: var(--card-bg); padding: 18px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
@@ -89,6 +90,15 @@
   .date-input { padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; color: var(--input-text); background: var(--input-bg); width: 100%; box-sizing: border-box; }
   .note-input { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; font-family: inherit; resize: vertical; min-height: 50px; box-sizing: border-box; background: var(--input-bg); color: var(--input-text); }
   
+  /* Bulk Entry UI */
+  .bulk-row { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
+  .bulk-row:last-child { border-bottom: none; }
+  .bulk-km { font-weight: 700; width: 65px; font-size: 13px; color: var(--text-main); }
+  .bulk-cb-wrapper { display: flex; align-items: center; justify-content: center; }
+  .bulk-checkbox { width: 22px; height: 22px; accent-color: #10b981; margin: 0; }
+  .bulk-inputs { display: flex; flex: 1; gap: 8px; }
+  .bulk-input { padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; background: var(--input-bg); color: var(--input-text); width: 100%; box-sizing: border-box; }
+  
   /* Backup Buttons */
   .btn-group { display: flex; gap: 10px; margin-top: 12px; }
   .btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; text-align: center; }
@@ -99,41 +109,55 @@
 <body>
 
 <div class="header-container">
-  <div style="width: 40px;"></div> <!-- Spacer for centering -->
+  <button class="nav-btn" id="bulk-toggle" title="Bulk Update History">📝 Bulk Edit</button>
   <h1>Prado 150 Schedule</h1>
-  <button class="theme-toggle" id="theme-toggle" title="Toggle Dark Mode">🌓</button>
+  <button class="nav-btn theme-toggle" id="theme-toggle" title="Toggle Dark Mode">🌓</button>
 </div>
 <div class="subtitle">3.0L Turbo Diesel | 5-Speed Auto | 0–1,000,000 km</div>
 
-<div class="control-group">
-  <label for="km-select">Select Odometer Reading (km)</label>
-  <select id="km-select">
-    <!-- Populated by JS -->
-  </select>
-  
-  <div class="checkbox-group">
-    <label class="checkbox-label">
-      <input type="checkbox" id="additional-check" checked>
-      Include Additional Maintenance (Off-Road/Heavy Duty)
-    </label>
-    <label class="checkbox-label">
-      <input type="checkbox" id="anthony-check" class="anthony-cb" checked>
-      Include Anthony's Advice (FourbyFour)
-    </label>
+<!-- MAIN APP VIEW -->
+<div id="main-view">
+  <div class="control-group">
+    <label for="km-select">Select Odometer Reading (km)</label>
+    <select id="km-select">
+      <!-- Populated by JS -->
+    </select>
+    
+    <div class="checkbox-group">
+      <label class="checkbox-label">
+        <input type="checkbox" id="additional-check" checked>
+        Include Additional Maintenance (Off-Road/Heavy Duty)
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" id="anthony-check" class="anthony-cb" checked>
+        Include Anthony's Advice (FourbyFour)
+      </label>
+    </div>
+  </div>
+
+  <div id="results">
+    <div class="empty-state">Select an interval above to view required service items.</div>
+  </div>
+
+  <div class="control-group" id="data-management">
+    <label>Service History Backup</label>
+    <p style="font-size: 12px; color: var(--text-muted); margin-top: 0;">Export your notes and dates before changing phones, or import a saved backup.</p>
+    <div class="btn-group">
+      <button class="btn btn-export" onclick="exportData()">Export Backup</button>
+      <button class="btn btn-import" onclick="document.getElementById('import-file').click()">Import Backup</button>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+    </div>
   </div>
 </div>
 
-<div id="results">
-  <div class="empty-state">Select an interval above to view required service items.</div>
-</div>
-
-<div class="control-group" id="data-management" style="display: none;">
-  <label>Service History Backup</label>
-  <p style="font-size: 12px; color: var(--text-muted); margin-top: 0;">Export your notes and dates before changing phones, or import a saved backup.</p>
-  <div class="btn-group">
-    <button class="btn btn-export" onclick="exportData()">Export Backup</button>
-    <button class="btn btn-import" onclick="document.getElementById('import-file').click()">Import Backup</button>
-    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+<!-- BULK EDIT VIEW -->
+<div id="bulk-view" style="display: none;">
+  <div class="control-group">
+    <h3 style="margin-top: 0; color: var(--text-main); margin-bottom: 4px;">Bulk Entry Mode</h3>
+    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; margin-top: 0;">Quickly backfill your service history. Checking a box automatically applies today's date if empty.</p>
+    <div id="bulk-list">
+      <!-- Populated by JS -->
+    </div>
   </div>
 </div>
 
@@ -149,7 +173,6 @@
     }
   }
 
-  // Check LocalStorage first, then System Preference
   const savedTheme = localStorage.getItem('prado_theme');
   const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   
@@ -188,20 +211,14 @@
       const meta = db[i] && db[i]._meta ? db[i]._meta : {};
       let text = i.toLocaleString() + ' km';
       
-      if (meta.actualKm) {
-        text += ` (Actual: ${meta.actualKm} km)`;
-      }
-      if (meta.completed) {
-        text = '✅ ' + text;
-      }
+      if (meta.actualKm) { text += ` (Actual: ${meta.actualKm} km)`; }
+      if (meta.completed) { text = '✅ ' + text; }
       
       option.text = text;
       select.appendChild(option);
     }
     
-    if (currentValue) {
-      select.value = currentValue;
-    }
+    if (currentValue) { select.value = currentValue; }
   }
 
   updateDropdown();
@@ -255,15 +272,16 @@
     const includeAdditional = document.getElementById('additional-check').checked;
     const includeAnthony = document.getElementById('anthony-check').checked;
     const resultsDiv = document.getElementById('results');
+    const dataMgmtDiv = document.getElementById('data-management');
     const db = getDB();
     
     if (!kmStr) {
       resultsDiv.innerHTML = '<div class="empty-state">Select an interval above to view required service items.</div>';
-      document.getElementById('data-management').style.display = 'none';
+      dataMgmtDiv.style.display = 'block';
       return;
     }
 
-    document.getElementById('data-management').style.display = 'block';
+    dataMgmtDiv.style.display = 'none';
     const km = parseInt(kmStr);
     let tasks = [];
 
@@ -361,17 +379,18 @@
     });
   }
 
-  document.getElementById('results').addEventListener('input', (e) => {
+  // Handle Input Changes on Main View
+  document.getElementById('main-view').addEventListener('input', (e) => {
+    if (!e.target.classList.contains('db-input') && !e.target.classList.contains('db-meta-input')) return;
+    
     const km = e.target.getAttribute('data-km');
     const db = getDB();
-    
     if (!db[km]) db[km] = {};
     if (!db[km]._meta) db[km]._meta = { completed: false, date: '', actualKm: '' };
 
     if (e.target.classList.contains('db-meta-input')) {
       const field = e.target.getAttribute('data-field');
       const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-      
       db[km]._meta[field] = value;
 
       if (e.target.type === 'checkbox' && e.target.checked) {
@@ -382,7 +401,6 @@
           db[km]._meta.date = today;
         }
       }
-      
       saveDB(db);
       updateDropdown(); 
     } 
@@ -393,11 +411,83 @@
       
       if (!db[km][item]) db[km][item] = { checked: false, notes: '' };
       db[km][item][field] = value;
+      saveDB(db);
+    }
+  });
+
+  // --- Bulk View Logic ---
+  document.getElementById('bulk-toggle').addEventListener('click', () => {
+    const mainView = document.getElementById('main-view');
+    const bulkView = document.getElementById('bulk-view');
+    const btn = document.getElementById('bulk-toggle');
+    
+    if (bulkView.style.display === 'none') {
+      mainView.style.display = 'none';
+      bulkView.style.display = 'block';
+      btn.innerHTML = '🔙 Back';
+      renderBulkList();
+    } else {
+      bulkView.style.display = 'none';
+      mainView.style.display = 'block';
+      btn.innerHTML = '📝 Bulk Edit';
+      updateDropdown();
+      renderTasks(); 
+    }
+  });
+
+  function renderBulkList() {
+    const container = document.getElementById('bulk-list');
+    container.innerHTML = '';
+    const db = getDB();
+
+    for (let i = 5000; i <= 1000000; i += 5000) {
+      const meta = (db[i] && db[i]._meta) ? db[i]._meta : { completed: false, date: '', actualKm: '' };
+      
+      const row = document.createElement('div');
+      row.className = 'bulk-row';
+      row.innerHTML = `
+        <div class="bulk-km">${i.toLocaleString()}</div>
+        <div class="bulk-cb-wrapper">
+          <input type="checkbox" class="bulk-meta-input bulk-checkbox" data-km="${i}" data-field="completed" ${meta.completed ? 'checked' : ''}>
+        </div>
+        <div class="bulk-inputs">
+          <input type="date" class="bulk-input bulk-meta-input" data-km="${i}" data-field="date" value="${meta.date}">
+          <input type="number" class="bulk-input bulk-meta-input" data-km="${i}" data-field="actualKm" placeholder="Odo km" value="${meta.actualKm}">
+        </div>
+      `;
+      container.appendChild(row);
+    }
+  }
+
+  // Handle Input Changes on Bulk View
+  document.getElementById('bulk-view').addEventListener('input', (e) => {
+    if (e.target.classList.contains('bulk-meta-input')) {
+      const km = e.target.getAttribute('data-km');
+      const field = e.target.getAttribute('data-field');
+      const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+      
+      const db = getDB();
+      if (!db[km]) db[km] = {};
+      if (!db[km]._meta) db[km]._meta = { completed: false, date: '', actualKm: '' };
+      
+      db[km]._meta[field] = value;
+      
+      // Auto-fill date if checkbox ticked in bulk view
+      if (e.target.type === 'checkbox' && e.target.checked) {
+        const row = e.target.closest('.bulk-row');
+        const dateInput = row.querySelector('input[data-field="date"]');
+        if (dateInput && !dateInput.value) {
+          const today = new Date().toISOString().split('T')[0];
+          dateInput.value = today;
+          db[km]._meta.date = today;
+        }
+      }
       
       saveDB(db);
     }
   });
   
+  // --- Data Management ---
   function exportData() {
     const db = localStorage.getItem(DB_KEY) || "{}";
     const blob = new Blob([db], { type: "application/json" });
