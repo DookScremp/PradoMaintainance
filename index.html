@@ -214,7 +214,7 @@
       const meta = db[i] && db[i]._meta ? db[i]._meta : {};
       let text = i.toLocaleString() + ' km';
       
-      if (meta.actualKm) { text += ` (Actual: ${meta.actualKm} km)`; }
+      if (meta.actualKm) { text += ` (${meta.actualKm} km)`; }
       if (meta.notes && meta.notes.trim() !== '') { text += ' 📝'; }
       if (meta.completed) { text = '✅ ' + text; }
       
