@@ -274,10 +274,22 @@
       if (!db[km][item]) db[km][item] = { checked: false, date: '', notes: '' };
       
       db[km][item][field] = value;
+
+      // Auto-set today's date when "Completed" is checked
+      if (e.target.type === 'checkbox' && e.target.checked) {
+        const dateInput = e.target.closest('.input-row').querySelector('.date-input');
+        // Only auto-fill if the date is currently empty (prevents overwriting old dates)
+        if (dateInput && !dateInput.value) {
+          const today = new Date().toISOString().split('T')[0];
+          dateInput.value = today;
+          db[km][item].date = today;
+        }
+      }
+
       saveDB(db);
     }
   });
-
+  
   function exportData() {
     const db = localStorage.getItem(DB_KEY) || "{}";
     const blob = new Blob([db], { type: "application/json" });
